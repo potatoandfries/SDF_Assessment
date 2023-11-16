@@ -1,14 +1,11 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.Console;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
 
 public class Client {
 
     public static void main(String[] args) {
+        
+        System.out.println("Hit Enter to generate*");
         Socket sock = null;
 
             try {
@@ -27,33 +24,37 @@ public class Client {
                 System.exit(1);
             }
 
-            InputStreamReader isr = new InputStreamReader(sock.getInputStream());
-            BufferedReader br = new BufferedReader(isr);
-            OutputStreamWriter osw = new OutputStreamWriter(sock.getOutputStream());
-            BufferedWriter bw = new BufferedWriter(osw);
+            final InputStreamReader isr = new InputStreamReader(sock.getInputStream());
+            final BufferedReader br = new BufferedReader(isr);
+            final OutputStreamWriter osw = new OutputStreamWriter(sock.getOutputStream());
+            final BufferedWriter bw = new BufferedWriter(osw);
+            
             Console cons = System.console();
             boolean stop = false;
-
+            
             while (!stop) {
                 String line = cons.readLine("> ");
+                for(int i=20;i>=0;i--){
                 line = line.trim();
                 stop = "exit".equals(line);
-                bw.write(line + "\n");
+                bw.write(line + "1\n");
                 bw.flush();
                 if (stop) continue;
                 line = br.readLine();
-                System.out.printf(">> result: %s\n", line);
+                System.out.printf(">> result: %s\n", line);}
             }
 
-        } catch (IOException e) {
-            System.err.println("Error connecting to the server: " + e.getMessage());
+            
+
+        } catch (IOException error) {
+            System.err.println("Error connecting to the server: " + error.getMessage());
         } finally {
             try {
                 if (sock != null) {
                     sock.close();
                 }
-            } catch (IOException e) {
-                System.err.println("Error closing socket: " + e.getMessage());
+            } catch (IOException error) {
+                System.err.println("Error closing socket: " + error.getMessage());
             }
         }
     }
